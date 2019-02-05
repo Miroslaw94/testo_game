@@ -58,7 +58,6 @@ def check_play_button(ai_settings, screen, stats, sb, play_button, ship, aliens,
         stats.reset_stats()
         stats.game_active = True
         sb.prep_score()
-        sb.prep_high_score()
         sb.prep_level()
         sb.prep_ships()
         music.play_music()
@@ -103,7 +102,6 @@ def check_bullet_alien_collisions(ai_settings, screen, stats, sb, ship, aliens, 
         for aliens in collisions.values():
             stats.score += ai_settings.alien_points
             sb.prep_score()
-        check_high_score(stats, sb)
     if len(aliens) == 0:
         sound.play_sound_win()
         bullets.empty()
@@ -113,11 +111,10 @@ def check_bullet_alien_collisions(ai_settings, screen, stats, sb, ship, aliens, 
         create_fleet(ai_settings, screen, ship, aliens)
 
 
-def check_high_score(stats, sb):
-    """Checks whether we have achieved new high score."""
-    if stats.score > stats.high_score[0]:
-        stats.high_score[0] = stats.score
-        sb.prep_high_score()
+#def check_high_score(stats):
+#    """Checks whether we have achieved new high score."""
+#    if stats.score > stats.high_score[0]:
+#        stats.high_score[0] = stats.score
 
 
 def update_screen(ai_settings, screen, stats, sb, play_button, highscores_button, ship, aliens, bullets):
