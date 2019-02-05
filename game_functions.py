@@ -111,10 +111,12 @@ def check_bullet_alien_collisions(ai_settings, screen, stats, sb, ship, aliens, 
         create_fleet(ai_settings, screen, ship, aliens)
 
 
-#def check_high_score(stats):
-#    """Checks whether we have achieved new high score."""
-#    if stats.score > stats.high_score[0]:
-#        stats.high_score[0] = stats.score
+def check_high_score(stats):
+    """Checks whether we have achieved new high score."""
+    if stats.score > min(stats.high_score):
+        stats.high_score.append(stats.score)
+        stats.high_score.sort(reverse=True)
+        del stats.high_score[5]
 
 
 def update_screen(ai_settings, screen, stats, sb, play_button, highscores_button, ship, aliens, bullets):
@@ -196,6 +198,7 @@ def ship_hit(ai_settings, stats, screen, sb, ship, aliens, bullets):
         pygame.mixer.music.stop()
         sound.play_sound_defeated()
         stats.game_active = False
+        check_high_score(stats)
         pygame.mouse.set_visible(True)
 
 
