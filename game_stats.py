@@ -5,7 +5,7 @@ class GameStats:
         """Initialisation of statistic data."""
         self.ai_settings = ai_settings
         self.game_active = False
-        self.high_score = [0]
+        self.high_score = [0, 0, 0, 0, 0]
         self.reset_stats()
 
     def reset_stats(self):

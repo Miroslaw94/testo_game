@@ -7,7 +7,6 @@ from bullet import Bullet
 from alien import Alien
 from sound import Sound
 from text_frame import TextFrame
-from button import Button
 
 
 def check_keydown_events(event, ai_settings, screen, ship, bullets):
