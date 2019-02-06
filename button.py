@@ -7,7 +7,7 @@ class Button:
         """Button attributes initialization."""
         self.screen = screen
         self.screen_rect = screen.get_rect()
-        self.width, self.height = 200, 50
+        self.width, self.height = 320, 50
         self.button_color = (152, 251, 152)
         self.text_color = (255, 255, 255)
         self.font = pygame.font.SysFont(None, 48)

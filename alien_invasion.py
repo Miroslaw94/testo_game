@@ -18,8 +18,9 @@ def run_game():
     pygame.display.set_caption("Testo game")
     game_icon = pygame.image.load('images/testo_small.png')
     pygame.display.set_icon(game_icon)
-    play_button = Button(screen, 310, "New game")
-    highscores_button = Button(screen, 380, "High scores")
+    play_button = Button(screen, 300, "New game")
+    highscores_button = Button(screen, 370, "High scores")
+    reset_button = Button(screen, 440, "Reset high scores")
     stats = GameStats(ai_settings)
     stats.load_high_scores()
     sb = Scoreboard(ai_settings, screen, stats)
@@ -27,12 +28,14 @@ def run_game():
     bullets = Group()
     aliens = Group()
     while True:
-        gf.check_events(ai_settings, screen, stats, sb, play_button, highscores_button, ship, aliens, bullets)
+        gf.check_events(ai_settings, screen, stats, sb, play_button, highscores_button, reset_button,
+                        ship, aliens, bullets)
         if stats.game_active:
             ship.update()
             gf.update_bullets(ai_settings, screen, stats, sb, ship, aliens, bullets)
             gf.update_aliens(ai_settings, stats, screen, sb, ship, aliens, bullets)
-        gf.update_screen(ai_settings, screen, stats, sb, play_button, highscores_button, ship, aliens, bullets)
+        gf.update_screen(ai_settings, screen, stats, sb, play_button, highscores_button,
+                         reset_button, ship, aliens, bullets)
 
 
 run_game()
