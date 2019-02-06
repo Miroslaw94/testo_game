@@ -13,7 +13,7 @@ class TextFrame:
         self.font = pygame.font.SysFont(None, 48)
         self.rect = pygame.Rect(0, 0, self.width, self.height)
         self.rect.center = self.screen_rect.center
-        self.high_scores = [str(round(x, -1)) for x in stats.high_score]
+        self.high_scores = [str("{:,}".format(round(x, -1))) for x in stats.high_score]
         self.msg = ['High scores:'] + self.high_scores
         self.prepared_msg = []
         self.y = self.rect.top + 25

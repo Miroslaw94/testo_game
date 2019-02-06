@@ -20,8 +20,8 @@ def run_game():
     pygame.display.set_icon(game_icon)
     play_button = Button(screen, 310, "New game")
     highscores_button = Button(screen, 380, "High scores")
-
     stats = GameStats(ai_settings)
+    stats.load_high_scores()
     sb = Scoreboard(ai_settings, screen, stats)
     ship = Ship(ai_settings, screen)
     bullets = Group()
