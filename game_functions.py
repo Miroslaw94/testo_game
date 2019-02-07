@@ -81,17 +81,16 @@ def check_difficulty_buttons(ai_settings, screen, stats, sb, easy_button, normal
     normal_button_clicked = normal_button.rect.collidepoint(mouse_x, mouse_y)
     hard_button_clicked = hard_button.rect.collidepoint(mouse_x, mouse_y)
     if easy_button_clicked and not stats.game_active:
-        print("Easy")
         stats.game_difficulty = "easy"
         start_game(ai_settings, screen, stats, sb, ship, aliens, bullets)
     elif normal_button_clicked and not stats.game_active:
-        print("Normal")
         stats.game_difficulty = "normal"
         start_game(ai_settings, screen, stats, sb, ship, aliens, bullets)
     elif hard_button_clicked and not stats.game_active:
-        print("Hard")
         stats.game_difficulty = "hard"
         start_game(ai_settings, screen, stats, sb, ship, aliens, bullets)
+    else:
+        stats.main_buttons_active = True
 
 
 def start_game(ai_settings, screen, stats, sb, ship, aliens, bullets):
@@ -113,11 +112,12 @@ def start_game(ai_settings, screen, stats, sb, ship, aliens, bullets):
 def check_highscores_button(screen, stats, highscores_button, mouse_x, mouse_y):
     button_clicked = highscores_button.rect.collidepoint(mouse_x, mouse_y)
     text_frame = TextFrame(screen, stats)
-    clock = pygame.time.Clock()
     if button_clicked and stats.main_buttons_active and not stats.game_active:
         text_frame.draw_frame()
         pygame.display.update()
-        clock.tick(0.4)
+        pygame.event.wait()
+        pygame.event.set_blocked(pygame.MOUSEMOTION)
+        pygame.event.wait()
 
 
 def check_reset_button(stats, reset_button, mouse_x, mouse_y):

@@ -7,14 +7,14 @@ class TextFrame:
     def __init__(self, screen, stats):
         self.screen = screen
         self.screen_rect = screen.get_rect()
-        self.width, self.height = 450, 300
+        self.width, self.height = 450, 420
         self.frame_color = (255, 204, 203)
         self.text_color = (30, 30, 30)
         self.font = pygame.font.SysFont(None, 48)
         self.rect = pygame.Rect(0, 0, self.width, self.height)
         self.rect.center = self.screen_rect.center
         self.high_scores = [str("{:,}".format(round(x, -1))) for x in stats.high_score]
-        self.msg = ['High scores:'] + self.high_scores
+        self.msg = ['High scores:'] + self.high_scores + ['', 'Press any key to go back.']
         self.prepared_msg = []
         self.y = self.rect.top + 25
         self.add_to_y = 0
