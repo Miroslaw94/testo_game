@@ -8,8 +8,10 @@ class GameStats:
         """Initialisation of statistic data."""
         self.ai_settings = ai_settings
         self.game_active = False
+        self.main_buttons_active = True
         self.high_score = [0, 0, 0, 0, 0]
         self.save_file = 'save_file.json'
+        self.game_difficulty = ""
         self.reset_stats()
 
     def reset_stats(self):

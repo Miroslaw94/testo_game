@@ -4,6 +4,7 @@ from time import sleep
 import pygame
 
 from bullet import Bullet
+from button import Button
 from alien import Alien
 from sound import Sound
 from text_frame import TextFrame
@@ -56,27 +57,64 @@ def check_events(ai_settings, screen, stats, sb, play_button, highscores_button,
 def check_play_button(ai_settings, screen, stats, sb, play_button, ship, aliens, bullets, mouse_x, mouse_y):
     """Starts new game after clicking a button."""
     button_clicked = play_button.rect.collidepoint(mouse_x, mouse_y)
+    if button_clicked and stats.main_buttons_active and not stats.game_active:
+        stats.main_buttons_active = False
+        easy_button = Button(screen, 300, "Easy")
+        normal_button = Button(screen, 370, "Normal")
+        hard_button = Button(screen, 440, "Hard")
+        easy_button.draw_button()
+        normal_button.draw_button()
+        hard_button.draw_button()
+        pygame.display.flip()
+        pygame.event.wait()
+        pygame.event.set_blocked(pygame.MOUSEMOTION)
+        event = pygame.event.wait()
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_x, mouse_y = pygame.mouse.get_pos()
+            check_difficulty_buttons(ai_settings, screen, stats, sb, easy_button, normal_button, hard_button,
+                                     ship, aliens, bullets, mouse_x, mouse_y)
+
+
+def check_difficulty_buttons(ai_settings, screen, stats, sb, easy_button, normal_button, hard_button,
+                             ship, aliens, bullets, mouse_x, mouse_y):
+    easy_button_clicked = easy_button.rect.collidepoint(mouse_x, mouse_y)
+    normal_button_clicked = normal_button.rect.collidepoint(mouse_x, mouse_y)
+    hard_button_clicked = hard_button.rect.collidepoint(mouse_x, mouse_y)
+    if easy_button_clicked and not stats.game_active:
+        print("Easy")
+        stats.game_difficulty = "easy"
+        start_game(ai_settings, screen, stats, sb, ship, aliens, bullets)
+    elif normal_button_clicked and not stats.game_active:
+        print("Normal")
+        stats.game_difficulty = "normal"
+        start_game(ai_settings, screen, stats, sb, ship, aliens, bullets)
+    elif hard_button_clicked and not stats.game_active:
+        print("Hard")
+        stats.game_difficulty = "hard"
+        start_game(ai_settings, screen, stats, sb, ship, aliens, bullets)
+
+
+def start_game(ai_settings, screen, stats, sb, ship, aliens, bullets):
     music = Sound()
-    if button_clicked and not stats.game_active:
-        stats.reset_stats()
-        stats.game_active = True
-        sb.prep_score()
-        sb.prep_level()
-        sb.prep_ships()
-        music.play_music()
-        aliens.empty()
-        bullets.empty()
-        ai_settings.initialize_dynamic_settings()
-        pygame.mouse.set_visible(False)
-        create_fleet(ai_settings, screen, ship, aliens)
-        ship.center_ship()
+    stats.reset_stats()
+    stats.game_active = True
+    sb.prep_score()
+    sb.prep_level()
+    sb.prep_ships()
+    music.play_music()
+    aliens.empty()
+    bullets.empty()
+    ai_settings.initialize_dynamic_settings()
+    pygame.mouse.set_visible(False)
+    create_fleet(ai_settings, screen, stats, ship, aliens)
+    ship.center_ship()
 
 
 def check_highscores_button(screen, stats, highscores_button, mouse_x, mouse_y):
     button_clicked = highscores_button.rect.collidepoint(mouse_x, mouse_y)
     text_frame = TextFrame(screen, stats)
     clock = pygame.time.Clock()
-    if button_clicked and not stats.game_active:
+    if button_clicked and stats.main_buttons_active and not stats.game_active:
         text_frame.draw_frame()
         pygame.display.update()
         clock.tick(0.4)
@@ -84,7 +122,7 @@ def check_highscores_button(screen, stats, highscores_button, mouse_x, mouse_y):
 
 def check_reset_button(stats, reset_button, mouse_x, mouse_y):
     button_clicked = reset_button.rect.collidepoint(mouse_x, mouse_y)
-    if button_clicked and not stats.game_active:
+    if button_clicked and stats.main_buttons_active and not stats.game_active:
         stats.high_score = [0, 0, 0, 0, 0]
 
 
@@ -117,7 +155,7 @@ def check_bullet_alien_collisions(ai_settings, screen, stats, sb, ship, aliens, 
         ai_settings.increase_speed()
         stats.level += 1
         sb.prep_level()
-        create_fleet(ai_settings, screen, ship, aliens)
+        create_fleet(ai_settings, screen, stats, ship, aliens)
 
 
 def check_high_score(stats):
@@ -150,9 +188,9 @@ def get_number_aliens_x(ai_settings, alien_width):
     return number_aliens_x
 
 
-def create_alien(ai_settings, screen, aliens, alien_number, row_number):
+def create_alien(ai_settings, screen, stats, aliens, alien_number, row_number):
     """Create alien and put him in row."""
-    alien = Alien(ai_settings, screen)
+    alien = Alien(ai_settings, screen, stats)
     alien_width = alien.rect.width
     alien.x = alien_width + 2 * alien_width * alien_number
     alien.rect.x = alien.x - 20
@@ -160,14 +198,14 @@ def create_alien(ai_settings, screen, aliens, alien_number, row_number):
     aliens.add(alien)
 
 
-def create_fleet(ai_settings, screen, ship, aliens):
+def create_fleet(ai_settings, screen, stats, ship, aliens):
     """Create fleet of aliens."""
-    alien = Alien(ai_settings, screen)
+    alien = Alien(ai_settings, screen, stats)
     number_aliens_x = get_number_aliens_x(ai_settings, alien.rect.width)
     number_rows = get_number_rows(ai_settings, ship.rect.height, alien.rect.height)
     for row_number in range(number_rows):
         for alien_number in range(number_aliens_x):
-            create_alien(ai_settings, screen, aliens, alien_number, row_number)
+            create_alien(ai_settings, screen, stats, aliens, alien_number, row_number)
 
 
 def get_number_rows(ai_settings, ship_height, alien_height):
@@ -200,7 +238,7 @@ def ship_hit(ai_settings, stats, screen, sb, ship, aliens, bullets):
         stats.ships_left -= 1
         aliens.empty()
         bullets.empty()
-        create_fleet(ai_settings, screen, ship, aliens)
+        create_fleet(ai_settings, screen, stats, ship, aliens)
         sb.prep_ships()
         ship.center_ship()
         sleep(0.3)
@@ -208,6 +246,7 @@ def ship_hit(ai_settings, stats, screen, sb, ship, aliens, bullets):
         pygame.mixer.music.stop()
         sound.play_sound_defeated()
         stats.game_active = False
+        stats.main_buttons_active = True
         check_high_score(stats)
         pygame.mouse.set_visible(True)
 
