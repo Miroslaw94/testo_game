@@ -1,6 +1,8 @@
 # Testo-game
 It's game similar to Space Invaders but in this case main character is Testoviron, famous polish youtuber.
 
+.. image:: screen-shot.png
+
 ## Requirements and install
 1. This app uses a PyGame library. 
 2. Install: ```pip install pygame```
